@@ -23,7 +23,7 @@ function getWeatherInfo( city ) {
         } );
 }
 
-getWeatherInfo( "cdjsfdfzskdsjkdskj" );
+getWeatherInfo( "Cluj-Napoca" );
 
 function displayWeatherInfo( cityName, degrees, condition ) {
     let cityDiv = document.createElement( "div" );
@@ -48,3 +48,21 @@ function displayWeatherInfo( cityName, degrees, condition ) {
     cityDiv.appendChild( weatherInfoDiv );
     parentContainer.appendChild( cityDiv );
 }
+
+let cities = ["Cluj-Napoca", "Timisoara","Constanta"];
+
+let requests = cities.map(url => loadJson( `https://api.openweathermap.org/data/2.5/weather?q=${url}&APPID=fbba44475f0c7199949d7e172d54ef98&units=metric`));
+
+Promise.all( requests )
+.then( weatherObjects => {
+    weatherObjects.forEach((weather)=>{
+      const { name, main: { temp: currentTemperature }, weather : [ { main: condition } ] } = weather;
+        displayWeatherInfo(name, Math.floor( currentTemperature ) , condition); 
+    }); 
+    
+} )
+
+.catch( err => {
+    alert( err );
+} );
+
