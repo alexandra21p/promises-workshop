@@ -11,20 +11,6 @@ function loadJson( url ) {
         } )
 }
 
-
-function getWeatherInfo( city ) {
-    return loadJson( `http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=fbba44475f0c7199949d7e172d54ef98&units=metric`)
-        .then( currentWeather => {
-            const { name, main: { temp: currentTemperature }, weather : [ { main: condition } ] } = currentWeather;
-            displayWeatherInfo( name, Math.floor( currentTemperature ) , condition );
-        } )
-        .catch( err => {
-            alert( err );
-        } );
-}
-
-getWeatherInfo( "Cluj-Napoca" );
-
 function displayWeatherInfo( cityName, degrees, condition ) {
     let cityDiv = document.createElement( "div" );
     let nameHeader = document.createElement( "h4" );
@@ -49,20 +35,67 @@ function displayWeatherInfo( cityName, degrees, condition ) {
     parentContainer.appendChild( cityDiv );
 }
 
-let cities = ["Cluj-Napoca", "Timisoara","Constanta"];
+
+function getWeatherInfo( city ) {
+    return loadJson( `http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=fbba44475f0c7199949d7e172d54ef98&units=metric`)
+        .then( currentWeather => {
+            const { name, main: { temp: currentTemperature }, weather : [ { main: condition } ] } = currentWeather;
+            displayWeatherInfo( name, Math.floor( currentTemperature ) , condition );
+        } )
+        .catch( err => {
+            alert( err );
+        } );
+}
+
+// getWeatherInfo( "Cluj-Napoca" );
+
+
+
+let cities = ["Arad", "Timisoara","Constanta"];
 
 let requests = cities.map(url => loadJson( `https://api.openweathermap.org/data/2.5/weather?q=${url}&APPID=fbba44475f0c7199949d7e172d54ef98&units=metric`));
 
-Promise.all( requests )
-.then( weatherObjects => {
-    weatherObjects.forEach((weather)=>{
-      const { name, main: { temp: currentTemperature }, weather : [ { main: condition } ] } = weather;
-        displayWeatherInfo(name, Math.floor( currentTemperature ) , condition); 
-    }); 
-    
-} )
+// Promise.all( requests )
+// .then( weatherObjects => {
+//     weatherObjects.forEach((weather)=>{
+//         const { name, main: { temp: currentTemperature }, weather : [ { main: condition } ] } = weather;
+//         displayWeatherInfo(name, Math.floor( currentTemperature ) , condition); 
+//     }); 
+// } )
+// .catch( err => {
+//     alert( err );
+// } );
 
-.catch( err => {
-    alert( err );
-} );
+async function getWeatherInfo( city ) {
+    try {
+        let response = await loadJson( `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=fbba44475f0c7199949d7e172d54ef98&units=metric`)
+        const { name, main: { temp: currentTemperature }, weather : [ { main: condition } ] } = response;
+        displayWeatherInfo( name, Math.floor( currentTemperature ) , condition );
+    } catch (err) {
+        alert(err);
+    }
+}
 
+// getWeatherInfo( "Suceava" );
+
+
+async function fetchWeather( url ) {
+    const response = await fetch( url );
+    return await response.json();
+}
+
+async function getWeatherInfoForCities( cities ) {
+    try {
+        const results = await Promise.all( cities.map( url => {
+            fetchWeather( `https://api.openweathermap.org/data/2.5/weather?q=${url}&APPID=fbba44475f0c7199949d7e172d54ef98&units=metric` );
+        } ) );
+
+        // let citiesWeather = await Promise.all( weather => console.log( weather ) );
+        results.forEach( city => console.log( city ) );
+    } catch ( error ) {
+        alert( error );
+    }
+}
+
+
+// getWeatherInfoForCities( cities );
