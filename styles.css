@@ -1,0 +1,45 @@
+body, * {
+  font-family: 'Century Gothic', sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+}
+.main {
+  width: 300px;
+  margin: 100px auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+
+}
+
+.city-weather {
+  margin: 15px;
+  text-align: center;
+  border-radius: 5px;
+  border: 1px solid grey;
+}
+
+h4 {
+  margin: 10px 60px;
+  padding: 5px 20px;
+  border-bottom: 1px solid #000;
+}
+
+.weather-info {
+  width: 100px;
+  margin: 10px auto;
+}
+
+.weather-info:after {
+  display: table;
+  content: '';
+  clear: both;
+}
+
+.degrees {
+  float: left;
+}
+
+.condition {
+  float: right;
+}
